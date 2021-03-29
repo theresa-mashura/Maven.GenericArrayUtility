@@ -1,13 +1,13 @@
 package com.zipcodewilmington.arrayutility;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by leon on 3/6/18.
  */
-public class ArrayUtility<E extends Comparable<E>> {
+public class ArrayUtility<E> {
 
     private E[] inputArray;
     private E[] mergedArray;
@@ -16,17 +16,16 @@ public class ArrayUtility<E extends Comparable<E>> {
     public ArrayUtility(E[] inputArray) {
         this.inputArray = inputArray;
         this.mergedArray = inputArray;
-
     }
 
     public E[] mergeArrays(E[] arrayToMerge) {
         int l = arrayToMerge.length + inputArray.length;
-        E[] newArr = (E[]) new Object[l];
+        E[] newArr = Arrays.copyOf(inputArray, l);
 
         for (int i = 0, j = 0; i < l; i++) {
             if (i < inputArray.length) {
                 newArr[i] = inputArray[i];
-            } else if (i >= inputArray.length) {
+            } else {
                 newArr[i] = arrayToMerge[j];
                 j++;
             }
@@ -35,18 +34,19 @@ public class ArrayUtility<E extends Comparable<E>> {
         return newArr;
     }
 
-    public void sortArray() {
-        E temp;
-        for (int i = 0; i < mergedArray.length; i++) {
-            for (int j = 1; j < mergedArray.length - 1; j++) {
-                if(mergedArray[j-1].compareTo(mergedArray[j]) > 0) {
-                    temp = mergedArray[j-1];
-                    mergedArray[j-1] = mergedArray[j];
-                    mergedArray[j] = temp;
-                }
-            }
-        }
-    }
+
+//    public void sortArray() {
+//        E temp;
+//        for (int i = 0; i < mergedArray.length; i++) {
+//            for (int j = 1; j < mergedArray.length - 1; j++) {
+//                if(mergedArray[j-1].compareTo(mergedArray[j]) > 0) {
+//                    temp = mergedArray[j-1];
+//                    mergedArray[j-1] = mergedArray[j];
+//                    mergedArray[j] = temp;
+//                }
+//            }
+//        }
+//    }
 
     public int countDuplicatesInMerge(E[] arrayToMerge, E valueToEvaluate) {
         mergeArrays(arrayToMerge);
@@ -63,7 +63,7 @@ public class ArrayUtility<E extends Comparable<E>> {
 
     public E getMostCommonFromMerge(E[] arrayToMerge) {
         mergeArrays(arrayToMerge);
-        this.sortArray();
+        Arrays.sort(this.mergedArray);
 
         int count = 1;
         int mostCommonCount = 0;
@@ -79,6 +79,11 @@ public class ArrayUtility<E extends Comparable<E>> {
                 }
                 count = 1;
             }
+        }
+
+        // If most common element is the at the end....
+        if (count > mostCommonCount) {
+            mostCommonElement = mergedArray[mergedArray.length -1];
         }
         return mostCommonElement;
     }
@@ -96,7 +101,7 @@ public class ArrayUtility<E extends Comparable<E>> {
 
     public E[] removeValue(E valueToRemove) {
         int l = mergedArray.length - this.getNumberOfOccurrences(valueToRemove);
-        E[] arr = (E[]) new Object[l];
+        E[] arr = Arrays.copyOf(inputArray, l);
 
         for (int i = 0, j = 0; i < mergedArray.length; i++) {
             if (!mergedArray[i].equals(valueToRemove)) {
@@ -104,7 +109,6 @@ public class ArrayUtility<E extends Comparable<E>> {
                 j++;
             }
         }
-
         this.mergedArray = arr;
         return mergedArray;
     }
